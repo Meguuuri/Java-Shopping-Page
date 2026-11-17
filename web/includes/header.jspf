@@ -1,0 +1,32 @@
+<%@ page pageEncoding="UTF-8" import="models.User, utils.Constants" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    // SCRIPTLET: who is viewing? (null = Guest)
+    User headerUser = (User) session.getAttribute(Constants.SESSION_USER);
+    String ctx = request.getContextPath();
+%>
+<header class="site-header">
+    <div class="course">
+        <c:out value="${applicationScope.headerSubject}"/> - <c:out value="${applicationScope.headerSection}"/>
+    </div>
+    <div class="members">
+        <c:forEach var="m" items="${applicationScope.headerMembers}" varStatus="s">
+            <c:out value="${m}"/><c:if test="${!s.last}"> | </c:if>
+        </c:forEach>
+    </div>
+    <nav>
+        <%-- Absolute links (contextPath) so nav works from any folder --%>
+        <a href="<%= ctx %>/index.jsp">Home</a>
+        <a href="<%= ctx %>/ProductServlet">Products</a>
+        <a href="<%= ctx %>/about.html">About</a>
+        <% if (headerUser == null) { %>
+            <a href="<%= ctx %>/login.jsp">Login</a>
+            <a href="<%= ctx %>/register.jsp">Register</a>
+        <% } else { %>
+            <a href="<%= ctx %>/user/home.jsp">My Account</a>
+            <a href="<%= ctx %>/user/cart.jsp">Cart</a>
+            <a href="<%= ctx %>/user/orders.jsp">Orders</a>
+            <a href="<%= ctx %>/LogoutServlet">Logout</a>
+        <% } %>
+    </nav>
+</header>
