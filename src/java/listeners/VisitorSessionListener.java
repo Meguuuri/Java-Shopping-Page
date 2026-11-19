@@ -9,9 +9,17 @@ import utils.Constants;
 public class VisitorSessionListener implements HttpSessionListener {
 
     public void sessionCreated(HttpSessionEvent se) {
+        
+        if (se == null || se.getSession() == null){
+            return;
+        }
         ServletContext ctx = se.getSession().getServletContext();
         synchronized (ctx) {
             // TODO: read Constants.APP_VISITORS (Integer), add 1, store it back
+            Integer visitor = (Integer) ctx.getAttribute(Constants.APP_VISITORS);
+            int count = (visitor != null) ? visitor.intValue(): 0;
+            count++;
+            ctx.setAttribute(Constants.APP_VISITORS, Integer.valueOf(count));
         }
     }
 

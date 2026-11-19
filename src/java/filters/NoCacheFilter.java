@@ -17,7 +17,10 @@ public class NoCacheFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) res;
-        // TODO: set Cache-Control "no-cache, no-store, must-revalidate", Pragma "no-cache", Expires 0
+        
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         chain.doFilter(req, res);
     }
 

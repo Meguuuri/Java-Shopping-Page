@@ -17,7 +17,12 @@ public class CartItem {
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public double getSubtotal() {
-        // TODO: return product price * quantity
-        return 0;
+        if (product == null){
+           return 0.0;  
+        }
+       return product.getPrice() * quantity;
+    }
+    public String getName(){
+        return product != null ? product.getName(): "";
     }
 }

@@ -15,7 +15,7 @@
     </context-param>
     <context-param>
         <param-name>headerMembers</param-name>
-        <param-value>Calipes, FirstName; Cortez, FirstName; Dizon, FirstName</param-value>
+        <param-value>Calipes, Jeremiah; Cortez, LA; Dizon, Samantha</param-value>
     </context-param>
     <context-param>
         <param-name>footerMP</param-name>

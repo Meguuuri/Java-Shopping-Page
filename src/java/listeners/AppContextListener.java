@@ -1,56 +1,56 @@
 package listeners;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import utils.Constants;
 
 /**
- * Runs when the app starts/stops.
- * - Stores header/footer info in ServletContext
- * - Keeps the "current date and time" attribute refreshed
- * - Seeds in-memory data
+ * Runs once when the web app starts. Stores the startup Date plus the
+ * common header/footer text in the ServletContext (application scope).
+ *
+ * Attributes created (use in JSP as ${applicationScope.xxx}):
+ *   appDate, headerText, footerText
  */
 public class AppContextListener implements ServletContextListener {
-
-    private Timer timer;
+    
+    private ScheduledExecutorService scheduler;
 
     public void contextInitialized(ServletContextEvent sce) {
-        final ServletContext ctx = sce.getServletContext();
+       final ServletContext ctx = sce.getServletContext();
 
-        // Header info (from web.xml context-params)
-        ctx.setAttribute(Constants.APP_SUBJECT, ctx.getInitParameter("headerSubject"));
-        ctx.setAttribute(Constants.APP_SECTION, ctx.getInitParameter("headerSection"));
-        // TODO: split ctx.getInitParameter("headerMembers") by ";" into a trimmed List<String>
-        List<String> members = new ArrayList<String>();
-        ctx.setAttribute(Constants.APP_MEMBERS, members);
+        ctx.setAttribute("appDate", new Date());
 
-        // Footer info
-        ctx.setAttribute(Constants.APP_MP, ctx.getInitParameter("footerMP"));
+        // Header: SUBJECT / SECTION / LASTNAME1 - LASTNAME2
+        String header = ctx.getInitParameter("headerSubject") + " / "
+                + ctx.getInitParameter("headerSection") + " / "
+                + ctx.getInitParameter("headerMembers");
+        ctx.setAttribute("headerText", header);
 
-        // Visitor counter starts at 0 (incremented by VisitorSessionListener)
-        ctx.setAttribute(Constants.APP_VISITORS, Integer.valueOf(0));
-
-        // Current date/time, refreshed periodically
-        ctx.setAttribute(Constants.APP_DATE, new Date());
-        timer = new Timer("date-refresher", true);
-        timer.schedule(new TimerTask() {
+  
+        ctx.setAttribute("footerText", ctx.getInitParameter("footerMP"));
+        
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
             public void run() {
-                // TODO: ctx.setAttribute(Constants.APP_DATE, new Date());
+                String currentTime = df.format(new Date());
+                ctx.setAttribute("liveClock", currentTime);
             }
-        }, 1000L, 1000L);
-
-        // TODO: call dao.UserDAO.seed() and dao.ProductDAO.seed()
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-        if (timer != null) {
-            timer.cancel();
-        }
+        ServletContext ctx = sce.getServletContext();
+        ctx.removeAttribute("appDate");
+        ctx.removeAttribute("headerText");
+        ctx.removeAttribute("footerText");
+        ctx.removeAttribute("liveClock");
     }
 }
