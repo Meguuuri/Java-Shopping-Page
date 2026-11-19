@@ -25,6 +25,12 @@ public class AuthFilter implements Filter {
 
         // TODO: if session == null or session.getAttribute(Constants.SESSION_USER) == null
         //       -> response.sendRedirect(request.getContextPath() + Constants.PAGE_LOGIN); return;
+        boolean loggedIn = session != null 
+                && session.getAttribute(Constants.SESSION_USER) != null;
+        if(!loggedIn){
+            response.sendRedirect(request.getContextPath() + Constants.PAGE_LOGIN);
+            return;
+        }
         chain.doFilter(req, res);
     }
 
