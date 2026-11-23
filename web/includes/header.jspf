@@ -18,7 +18,7 @@
         <%-- Absolute links (contextPath) so nav works from any folder --%>
         <a href="<%= ctx %>/index.jsp">Home</a>
         <a href="<%= ctx %>/ProductServlet">Products</a>
-        <a href="<%= ctx %>/about.html">About</a>
+        <a href="<%= ctx %>/about.jsp">About</a>
         <% if (headerUser == null) { %>
             <a href="<%= ctx %>/login.jsp">Login</a>
             <a href="<%= ctx %>/register.jsp">Register</a>
