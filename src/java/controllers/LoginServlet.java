@@ -19,6 +19,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        UserDAO.seed();
         successPage = getInitParameter("successPage");
         failurePage = getInitParameter("failurePage");
         if (Validator.isEmpty(successPage)) successPage = "/user/home.jsp";

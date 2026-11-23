@@ -20,19 +20,28 @@ public class AppContextListener implements ServletContextListener {
     
     private ScheduledExecutorService scheduler;
 
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
        final ServletContext ctx = sce.getServletContext();
 
         ctx.setAttribute("appDate", new Date());
 
+        String subject = ctx.getInitParameter("headerSubject");
+        String section = ctx.getInitParameter("headerSection");
+        String rawMembers = ctx.getInitParameter("headerMembers");
+        
+        ctx.setAttribute("headerSubject", subject);
+        ctx.setAttribute("headerSection", section);
+        if(rawMembers != null && !rawMembers.trim().isEmpty())
+        {
+            String[] members = rawMembers.split("\\s*;\\s*");
+            ctx.setAttribute("headerMembers", members);
+        }
+        
         // Header: SUBJECT / SECTION / LASTNAME1 - LASTNAME2
-        String header = ctx.getInitParameter("headerSubject") + " / "
-                + ctx.getInitParameter("headerSection") + " / "
-                + ctx.getInitParameter("headerMembers");
+        String header = subject + " / " + section + " / " + rawMembers;
         ctx.setAttribute("headerText", header);
-
-  
-        ctx.setAttribute("footerText", ctx.getInitParameter("footerMP"));
+        ctx.setAttribute("footerText", ctx.getInitParameter("footerMp"));
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
         final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -46,9 +55,16 @@ public class AppContextListener implements ServletContextListener {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
+    @Override
     public void contextDestroyed(ServletContextEvent sce) {
+        if (scheduler != null)
+            scheduler.shutdownNow();
+        
         ServletContext ctx = sce.getServletContext();
         ctx.removeAttribute("appDate");
+        ctx.removeAttribute("headerSubject");
+        ctx.removeAttribute("headerSection");
+        ctx.removeAttribute("headerMembers");
         ctx.removeAttribute("headerText");
         ctx.removeAttribute("footerText");
         ctx.removeAttribute("liveClock");

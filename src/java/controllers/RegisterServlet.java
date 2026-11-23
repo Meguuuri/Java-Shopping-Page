@@ -13,6 +13,12 @@ import utils.Validator;
 
 /** Creates a new User account. */
 public class RegisterServlet extends HttpServlet {
+    
+    @Override
+    public void init() throws ServletException
+    {
+        UserDAO.seed();
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
