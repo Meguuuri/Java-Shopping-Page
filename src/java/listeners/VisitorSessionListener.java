@@ -1,29 +1,43 @@
 package listeners;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 import utils.Constants;
 
-/** Counts visitors: +1 for every new session. Count lives in ServletContext. */
-public class VisitorSessionListener implements HttpSessionListener {
 
-    public void sessionCreated(HttpSessionEvent se) {
-        
-        if (se == null || se.getSession() == null){
+public class VisitorSessionListener implements ServletRequestListener {
+
+    // IPs already counted. Lives as long as this listener (the whole app run).
+    private final Set<String> seenVisitors = new HashSet<String>();
+
+    public void requestInitialized(ServletRequestEvent sre) {
+        if (sre == null) {
             return;
         }
-        ServletContext ctx = se.getSession().getServletContext();
-        synchronized (ctx) {
-            // TODO: read Constants.APP_VISITORS (Integer), add 1, store it back
-            Integer visitor = (Integer) ctx.getAttribute(Constants.APP_VISITORS);
-            int count = (visitor != null) ? visitor.intValue(): 0;
-            count++;
-            ctx.setAttribute(Constants.APP_VISITORS, Integer.valueOf(count));
+
+        ServletRequest request = sre.getServletRequest();
+        String ip = (request != null) ? request.getRemoteAddr() : null;
+        if (ip == null) {
+            return;
+        }
+
+        ServletContext ctx = sre.getServletContext();
+        synchronized (seenVisitors) {
+            // add() returns true only if the IP was not already in the set
+            if (seenVisitors.add(ip)) {
+                Integer current = (Integer) ctx.getAttribute(Constants.APP_VISITORS);
+                int count = (current != null) ? current.intValue() : 0;
+                count++;
+                ctx.setAttribute(Constants.APP_VISITORS, Integer.valueOf(count));
+            }
         }
     }
 
-    public void sessionDestroyed(HttpSessionEvent se) {
-        // Intentionally empty: the total visitor count never decreases.
+    public void requestDestroyed(ServletRequestEvent sre) {
+        // Intentionally empty: the total never decreases.
     }
 }
