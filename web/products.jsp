@@ -24,7 +24,8 @@
                 for (Product p : products) {
             %>
                 <div class="product-card">
-                    <%-- TODO: image, name, price, link to ProductServlet?id=, add-to-cart form --%>
+                    <img src="<%= request.getContextPath() %>/images/<%= p.getImage() %>"
+                                alt="<%= p.getName() %>">
                     <h3><%= p.getName() %></h3>
                 </div>
             <%
