@@ -121,7 +121,8 @@ p
 {
     margin: 0 0 16px 0;
 }
-main > p a:not(.button-form)
+
+main > p a:not(.button-form), main section > p a:not(.button-form)
 {
     display: inline-block;
     padding: 8px 16px;
@@ -136,19 +137,19 @@ main > p a:not(.button-form)
     text-decoration: none;
     transition: all 0.2s ease;
 }
-main > p a:not(.button-form):first-child    
+main > p a:not(.button-form):first-child, main section > p a:not(.button-form):first-child    
 {
     background-color: var(--accent);
     color: #F9F6F0;
     border-color: var(--accent);
 }
-main > p a:not(.button-form):hover
+main > p a:not(.button-form):hover, main section > p a:not(.button-form):hover
 {
     transform: translateY(-1px);
     border-color: var(--accent);
     box-shadow: var(--shadow-md);
 }
-main > p a:not(.button-form):first-child:hover    
+main > p a:not(.button-form):first-child:hover, main section > p a:not(.button-form):first-child:hover    
 {
     background-color: var(--accent-hover);
     color: #F9F6F0;
@@ -338,6 +339,22 @@ tr:last-child td
     margin-bottom: 16px;
 }
 .error:empty
+{
+    display: none;
+}
+
+.success
+{
+    color: #1E5E3A;
+    background-color: rgba(30, 94, 58, 0.88);
+    border-left: 3px solid #1E5E3A;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.93rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.success:empty
 {
     display: none;
 }

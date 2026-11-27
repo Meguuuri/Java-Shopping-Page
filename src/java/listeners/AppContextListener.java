@@ -23,7 +23,9 @@ public class AppContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
        final ServletContext ctx = sce.getServletContext();
-
+        
+        dao.UserDAO.seed();
+        dao.ProductDAO.seed();
         ctx.setAttribute("appDate", new Date());
 
         String subject = ctx.getInitParameter("headerSubject");
@@ -41,7 +43,8 @@ public class AppContextListener implements ServletContextListener {
         // Header: SUBJECT / SECTION / LASTNAME1 - LASTNAME2
         String header = subject + " / " + section + " / " + rawMembers;
         ctx.setAttribute("headerText", header);
-        ctx.setAttribute("footerText", ctx.getInitParameter("footerMp"));
+        ctx.setAttribute("footerMP", ctx.getInitParameter("footerMP"));
+
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
         final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

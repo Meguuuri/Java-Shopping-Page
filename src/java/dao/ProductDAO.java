@@ -47,6 +47,54 @@ public class ProductDAO {
                     10,
                     "lamp.jpg"
             ));
+            PRODUCTS.add(createProduct(
+                    5,
+                    "Duffle Bag with adjustable length",
+                    "Duffle Bag for gym and travelling with multiple compartments",
+                    800.00,
+                    13,
+                    "bag.jpg"
+            ));
+            PRODUCTS.add(createProduct(
+                    6,
+                    "Floral Summer Dress",
+                    "Floral Dress comes in multiple sizes",
+                    670.00,
+                    8,
+                    "dress.jpg"
+            ));
+             PRODUCTS.add(createProduct(
+                    7,
+                    "Cardigan",
+                    "Knitted Cardigan Brand New",
+                    500.00,
+                    8,
+                    "cardigan.jpg"
+            ));
+            PRODUCTS.add(createProduct(
+                    8,
+                    "School Supplies Set",
+                    "School supply set for students",
+                    450.00,
+                    9,
+                    "set.jpg"
+            ));
+            PRODUCTS.add(createProduct(
+                    9,
+                    "Dog Bowl",
+                    "Stainless Dog bowl",
+                    350.00,
+                    14,
+                    "bowl.jpg"
+            ));
+            PRODUCTS.add(createProduct(
+                    10,
+                    "Gaming-Set",
+                    "Low-End Gaming Set",
+                    10000.00,
+                    14,
+                    ""
+            ));
         }
     }
 
