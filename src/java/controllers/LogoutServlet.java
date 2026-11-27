@@ -15,8 +15,11 @@ public class LogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        // TODO: if session != null -> session.invalidate()
+        if (session != null)
+            session.invalidate();
+        
         response.sendRedirect(request.getContextPath() + Constants.PAGE_LOGIN);
+        
     }
 
     @Override
@@ -25,3 +28,5 @@ public class LogoutServlet extends HttpServlet {
         doGet(request, response);
     }
 }
+
+

@@ -44,6 +44,7 @@ public class AppContextListener implements ServletContextListener {
         String header = subject + " / " + section + " / " + rawMembers;
         ctx.setAttribute("headerText", header);
         ctx.setAttribute("footerMP", ctx.getInitParameter("footerMP"));
+
         
         scheduler = Executors.newSingleThreadScheduledExecutor();
         final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

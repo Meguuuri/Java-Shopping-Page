@@ -1,12 +1,15 @@
 package controllers;
 
+import dao.UserDAO;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import models.User;
 import utils.Constants;
+import utils.Validator;
 
 /** Handles login. Uses ServletConfig init-params successPage / failurePage. */
 public class LoginServlet extends HttpServlet {
@@ -16,8 +19,11 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        UserDAO.seed();
         successPage = getInitParameter("successPage");
         failurePage = getInitParameter("failurePage");
+        if (Validator.isEmpty(successPage)) successPage = "/user/home.jsp";
+        if (Validator.isEmpty(failurePage)) failurePage = Constants.PAGE_LOGIN;
     }
 
     @Override
@@ -26,11 +32,30 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        // TODO: validate input (utils.Validator), then dao.UserDAO.authenticate(...)
-        // TODO: on failure: request.setAttribute("errorMessage", ...) and forward to failurePage
-        // TODO: on success: invalidate old session, create new one, store User under
-        //       Constants.SESSION_USER, then response.sendRedirect(contextPath + successPage)
-        response.sendRedirect(request.getContextPath() + failurePage);
+        if (Validator.isEmpty(username) || Validator.isEmpty(password))
+        {
+            request.setAttribute("errorMessage", "Username and password are required");
+            request.getRequestDispatcher(failurePage).forward(request, response);
+            return;
+        }
+        
+        User user = UserDAO.authenticate(username, password);
+        if (user == null)
+        {
+            request.setAttribute("errorMessage", "Invalid username or password");
+            request.getRequestDispatcher(failurePage).forward(request, response);
+            return;
+        }
+        
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null)
+            oldSession.invalidate();
+        
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute (Constants.SESSION_USER, user);
+        
+        response.sendRedirect(request.getContextPath() + successPage);
+            
     }
 
     @Override
@@ -39,3 +64,5 @@ public class LoginServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + Constants.PAGE_LOGIN);
     }
 }
+
+
