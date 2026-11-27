@@ -27,8 +27,7 @@
                 for (Product p : products) {
             %>
                 <div class="product-card">
-                    <%-- Absolute path for product image --%>
-                    <img src="<%= request.getContextPath() %>/<%= p.getImageUrl() %>" alt="<%= p.getName() %>">
+
                     <h3><%= p.getName() %></h3>
                     <p class="price">₱<%= String.format("%.2f", p.getPrice()) %></p>
                     <p class="stock">In Stock: <%= p.getStock() %></p>
