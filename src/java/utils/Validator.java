@@ -6,12 +6,17 @@ public final class Validator {
     private Validator() { }
 
     public static boolean isEmpty(String s) {
-        // TODO: return true if s is null or blank after trim()
-        return false;
+        return s == null || s.trim().length() == 0;
     }
 
     public static boolean isPositiveInt(String s) {
-        // TODO: return true if s parses to an int > 0
-        return false;
+        if (s == null) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(s.trim()) > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

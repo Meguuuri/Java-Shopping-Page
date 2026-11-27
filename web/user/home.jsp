@@ -1,13 +1,14 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="models.User, utils.Constants, models.Order, java.util.List"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="models.User, utils.Constants, models.Order, models.CartItem, dao.OrderDAO, java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // SCRIPTLET: current user (AuthFilter guarantees non-null)
     User currentUser = (User) session.getAttribute(Constants.SESSION_USER);
-    List<Order> recentOrders = (List<Order>) request.getAttribute("recentOrders");
-    if(recentOrders==null){
-        recentOrders =(List<Order>) session.getAttribute("recentOrders");
-    }
-    int maxRecent = 5;
+
+    // SCRIPTLET: load this user's orders straight from the DAO
+    List<Order> recentOrders = (currentUser != null)
+            ? OrderDAO.findByUsername(currentUser.getUsername())
+            : null;
+    int maxRecent = 3;
 %>
 <!DOCTYPE html>
 <html>
@@ -21,7 +22,7 @@
             <h1>Welcome, <%= currentUser.getFullName() %></h1>
             <%-- Relative links (same folder) and parent folder (..) --%>
             <p><a href="cart.jsp">My cart</a> | <a href="orders.jsp">My orders</a> | <a href="../ProductServlet">Shop</a></p>
-            <%-- TODO: recent orders summary --%>
+
             <h2>Recent Orders</h2>
             <%
                 if (recentOrders != null && !recentOrders.isEmpty()) {
@@ -32,21 +33,29 @@
                     <tr>
                         <th>Order #</th>
                         <th>Date</th>
-                        <th>Status</th>
+                        <th>Items</th>
                         <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
-           <%
-                    for (int i = 0; i < limit; i++) {
+            <%
+                    // Newest first: the DAO list is oldest-to-newest, so walk it backwards
+                    for (int i = recentOrders.size() - 1; i >= recentOrders.size() - limit; i--) {
                         Order order = recentOrders.get(i);
-                        int itemCount = (order.getItems() != null) ? order.getItems().size() : 0;
+
+                        // Total quantity across all products in this order
+                        int itemCount = 0;
+                        if (order.getItems() != null) {
+                            for (CartItem ci : order.getItems()) {
+                                itemCount += ci.getQuantity();
+                            }
+                        }
             %>
                     <tr>
                         <td><%= order.getId() %></td>
                         <td><%= order.getOrderDate() %></td>
                         <td><%= itemCount %></td>
-                        <td><%= String.format("%.2f", order.getTotal()) %></td>
+                        <td>₱<%= String.format("%.2f", order.getTotal()) %></td>
                     </tr>
             <%
                     }
@@ -59,7 +68,7 @@
             %>
             <p>You have no recent orders yet.</p>
             <%
-                } 
+                }
             %>
         </main>
         <%@ include file="/includes/footer.jspf" %>

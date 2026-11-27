@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="java.util.List, dao.OrderDAO, models.Order, models.User, utils.Constants"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="java.util.List, dao.OrderDAO, models.Order, models.CartItem, models.User, utils.Constants"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     User currentUser = (User) session.getAttribute(Constants.SESSION_USER);
@@ -32,7 +32,14 @@
             <%
                     for (int i = userOrders.size() - 1; i >= 0; i--) {
                         Order order = userOrders.get(i);
-                        int itemCount = (order.getItems() != null) ? order.getItems().size() : 0;
+
+                        // Total quantity across all products in this order
+                        int itemCount = 0;
+                        if (order.getItems() != null) {
+                            for (CartItem ci : order.getItems()) {
+                                itemCount += ci.getQuantity();
+                            }
+                        }
             %>
                     <tr>
                         <td><%= order.getId() %></td>
@@ -52,7 +59,7 @@
             <%
                 }
             %>
-            <p><a href="account.jsp">Back to My Account</a> | <a href="../ProductServlet">Continue shopping</a></p>
+            <p><a href="home.jsp">Back to My Account</a> | <a href="../ProductServlet">Continue shopping</a></p>
         </main>
         <%@ include file="/includes/footer.jspf" %>
     </body>

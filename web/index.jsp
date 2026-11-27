@@ -11,7 +11,7 @@
         <main>
             <%
                 // SCRIPTLET: determine user role from session
-                Object currentUser = session.getAttribute("user");
+                Object currentUser = session.getAttribute("loggedUser");
                 String roleLabel = (currentUser != null) ? "Customer" : "Guest";
             %>
 
