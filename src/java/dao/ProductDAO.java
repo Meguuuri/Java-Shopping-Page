@@ -87,6 +87,14 @@ public class ProductDAO {
                     14,
                     "bowl.jpg"
             ));
+            PRODUCTS.add(createProduct(
+                    10,
+                    "Gaming-Set",
+                    "Low-End Gaming Set",
+                    10000.00,
+                    14,
+                    ""
+            ));
         }
     }
 

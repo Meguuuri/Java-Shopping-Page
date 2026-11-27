@@ -27,13 +27,22 @@
                 for (Product p : products) {
             %>
                 <div class="product-card">
-
+                    
+            <%
+                   // SCRIPTLET: use a placeholder when a product has no image name
+                    String img = p.getImage();
+                    if (img == null || img.trim().length() == 0) {
+                    img = "placeholder.jpg";
+                    }
+            %>
+            <img src="<%= request.getContextPath() %>/images/<%= img %>"
+                    alt="<%= p.getName() %>">
                     <h3><%= p.getName() %></h3>
                     <p class="price">₱<%= String.format("%.2f", p.getPrice()) %></p>
                     <p class="stock">In Stock: <%= p.getStock() %></p>
 
                     <%-- Relative link to ProductServlet with id parameter --%>
-                    <p><a href="ProductServlet?id=<%= p.getId() %>">View Details</a></p>
+                    <p><a href="ProductServlet?id=<%= p.getId() %>" class="button-form">View Details</a></p>
 
                     <%-- Add-to-cart form posting to user/CartServlet --%>
                     <form action="<%= request.getContextPath() %>/user/CartServlet" method="post">
