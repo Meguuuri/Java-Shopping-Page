@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <!-- ===== Context params (read by AppContextListener -> header/footer) ===== -->
     <!-- TODO: fill in real values. Members: "Last Name, First Name" separated by semicolons -->
     <context-param>
@@ -21,16 +18,19 @@
         <param-name>footerMP</param-name>
         <param-value>MP4</param-value>
     </context-param>
-
     <!-- ===== Listeners ===== -->
     <listener>
         <listener-class>listeners.AppContextListener</listener-class>
     </listener>
-    <listener>
-        <listener-class>listeners.VisitorSessionListener</listener-class>
-    </listener>
-
     <!-- ===== Filters ===== -->
+    <filter>
+    <filter-name>VisitorFilter</filter-name>
+    <filter-class>filters.VisitorFilter</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>VisitorFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>filters.AuthFilter</filter-class>
@@ -51,7 +51,6 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/login.jsp</url-pattern>
     </filter-mapping>
-
     <!-- ===== Servlets (init-params = ServletConfig usage) ===== -->
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
@@ -65,11 +64,18 @@
             <param-value>/login.jsp</param-value>
         </init-param>
     </servlet>
+    <servlet>
+        <servlet-name>VisitorFilter</servlet-name>
+        <servlet-class>listeners.VisitorFilter</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VisitCout</servlet-name>
+        <servlet-class>filters.VisitorFilter</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>controllers.LogoutServlet</servlet-class>
@@ -78,7 +84,6 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>controllers.RegisterServlet</servlet-class>
@@ -87,7 +92,6 @@
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/RegisterServlet</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>ProductServlet</servlet-name>
         <servlet-class>controllers.ProductServlet</servlet-class>
@@ -96,7 +100,6 @@
         <servlet-name>ProductServlet</servlet-name>
         <url-pattern>/ProductServlet</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>CartServlet</servlet-name>
         <servlet-class>controllers.CartServlet</servlet-class>
@@ -109,7 +112,6 @@
         <servlet-name>CartServlet</servlet-name>
         <url-pattern>/user/CartServlet</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>CheckoutServlet</servlet-name>
         <servlet-class>controllers.CheckoutServlet</servlet-class>
@@ -118,17 +120,22 @@
         <servlet-name>CheckoutServlet</servlet-name>
         <url-pattern>/user/CheckoutServlet</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>VisitorFilter</servlet-name>
+        <url-pattern>/VisitorFilter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VisitCout</servlet-name>
+        <url-pattern>/VisitCounter</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
-
     <!-- ===== Welcome files: index.jsp for "/" (Guest), home.jsp for "/user/" (User) ===== -->
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>home.jsp</welcome-file>
     </welcome-file-list>
-
     <!-- ===== Custom error pages ===== -->
     <error-page>
         <error-code>400</error-code>
