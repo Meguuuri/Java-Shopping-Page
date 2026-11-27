@@ -44,8 +44,19 @@
                     <tr>
                         <td><%= order.getId() %></td>
                         <td><%= order.getOrderDate() %></td>
-                        <td><%= itemCount %></td>
-                        <td><%= String.format("%.2f", order.getTotal()) %></td>
+                        <td>
+            <%
+                        if (order.getItems() != null) {
+                            for (CartItem ci : order.getItems()) {
+            %>
+                            <%= ci.getProduct().getName() %> x <%= ci.getQuantity() %><br>
+            <%
+                            }
+                        }
+            %>
+                            <small>(<%= itemCount %> total)</small>
+                        </td>
+                        <td>₱<%= String.format("%.2f", order.getTotal()) %></td>
                     </tr>
             <%
                     }
